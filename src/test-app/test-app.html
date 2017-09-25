@@ -22,6 +22,7 @@
       on-error="on_ajax_err"
     ></iron-ajax>
 
+    <h3>Filter by status</h3>
     <iron-selector attr-for-selected="name" selected="{{activeFilter}}" fallback-selection="1">
       <div name="1">Active</div>
       <div name="2">Fixed</div>
@@ -29,6 +30,7 @@
       <div name="14">RTBC</div>
     </iron-selector>
 
+    <h3>Issues</h3>
     <div class="horizontal-section-container">
       <template is="dom-repeat" items="[[ajaxResponse.list]]" as="issue">
         <div class="horizontal-section">
