@@ -1,0 +1,76 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+
+<dom-module id="test-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .iron-selected {
+        background: #eee;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+
+    <iron-ajax auto
+      url="https://www.drupal.org/api-d7/node.json"
+      params="[[params(activeFilter)]]"
+      handle-as="json"
+      last-response="{{ajaxResponse}}"
+      on-error="on_ajax_err"
+    ></iron-ajax>
+
+    <iron-selector attr-for-selected="name" selected="{{activeFilter}}" fallback-selection="1">
+      <div name="1">Active</div>
+      <div name="2">Fixed</div>
+      <div name="8">Needs review</div>
+      <div name="14">RTBC</div>
+    </iron-selector>
+
+    <div class="horizontal-section-container">
+      <template is="dom-repeat" items="[[ajaxResponse.list]]" as="issue">
+        <div class="horizontal-section">
+          <h2><a href="[[issue.url]]" target="_blank">[[issue.title]]</a></h2>
+          <p>[[issue.body.value]]</p>
+        </div>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class TestApp extends Polymer.Element {
+      static get is() { return 'test-app'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'test-app'
+          },
+          activeFilter: {
+            type: String,
+            value: '1'
+          }
+        };
+      }
+      params(activeFilter) {
+        return {
+          "type": "project_issue",
+          "field_project": "2849828",
+          "field_issue_status": activeFilter
+        }
+      }
+      on_ajax_err(event) {
+        console.log('Ajax error');
+        console.info(event.detail);
+      }
+    }
+
+    window.customElements.define(TestApp.is, TestApp);
+  </script>
+</dom-module>
